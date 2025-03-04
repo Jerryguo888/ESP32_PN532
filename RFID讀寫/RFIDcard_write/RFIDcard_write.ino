@@ -31,33 +31,37 @@ void setup() {
   }
   
   nfc.SAMConfig();
-  Serial.println("請刷 NFC 卡片...");
+  Serial.println("請刷 RFID 卡片...");
 }
 
 void loop() {
-  Serial.println("請將 RFID 卡片靠近...");
+  Serial.println("請將 RFID 卡片靠近..."); // 提示用戶將 RFID 卡片靠近感應區
 
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 }; // UID buffer
-  uint8_t uidLength;
-  
+  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 }; // 建立一個陣列來儲存 UID（卡片唯一識別碼）
+  uint8_t uidLength; // 變數 uidLength 用來存放 UID 長度（幾個位元組）
+
+  // 嘗試讀取靠近的 RFID 卡片
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)) {
-    Serial.println("找到 RFID 卡片！");
+    Serial.println("找到 RFID 卡片！"); // 成功偵測到卡片
 
-    uint8_t dataBlock[16] = "Hello RFID!"; // 要寫入的文字（最多 16 個字元）
+    uint8_t dataBlock[16] = "Hello RFID!"; // 要寫入的字串，最多 16 個字元（MIFARE Classic 每個 block 只能存 16 bytes）
     
-    uint8_t blockNum = 4; // MIFARE Classic 資料存儲在 block 4 之後
-    uint8_t keyA[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }; // 預設密鑰
+    uint8_t blockNum = 4; // 設定要寫入的 block 編號（MIFARE Classic 資料區從 block 4 開始）
+    uint8_t keyA[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }; // 預設密鑰（出廠時通常都是 0xFF FF FF FF FF FF）
 
+    // 使用 Key A 來驗證區塊是否可以存取
     if (nfc.mifareclassic_AuthenticateBlock(uid, uidLength, blockNum, 0, keyA)) {
+      // 如果驗證成功，嘗試寫入資料到 blockNum
       if (nfc.mifareclassic_WriteDataBlock(blockNum, dataBlock)) {
-        Serial.println("寫入成功！");
+        Serial.println("寫入成功！"); // 成功寫入資料
       } else {
-        Serial.println("寫入失敗！");
+        Serial.println("寫入失敗！"); // 可能發生寫入錯誤，例如存取權限不足
       }
     } else {
-      Serial.println("區塊驗證失敗！");
+      Serial.println("區塊驗證失敗！"); // 如果驗證密鑰失敗，可能密鑰不正確或區塊無法存取
     }
 
-    delay(2000); // 避免連續寫入
+    delay(2000); // 等待 2 秒，避免連續寫入導致卡片頻繁存取
   }
 }
+

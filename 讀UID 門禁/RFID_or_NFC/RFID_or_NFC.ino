@@ -38,9 +38,9 @@ void loop() {
 
     // 判斷卡片類型
     if (uidLength == 4) {
-      Serial.println("判斷結果: 這是 MIFARE Classic (RFID) 卡");
+      Serial.println("判斷結果: 這是RFID卡");
     } else if (uidLength == 7) {
-      Serial.println("判斷結果: 這是 MIFARE Ultralight / NFC 卡");
+      Serial.println("判斷結果: 這是NFC卡");
     } else {
       Serial.println("未知類型的卡片");
     }

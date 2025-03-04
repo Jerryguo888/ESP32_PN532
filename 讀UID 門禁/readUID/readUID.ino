@@ -31,7 +31,7 @@ void setup() {
   }
 
   nfc.SAMConfig();
-  Serial.println("請刷 NFC 卡片...");
+  Serial.println("請刷卡片...");
 
 }
 
@@ -40,7 +40,7 @@ void loop() {
   uint8_t uidLength;
 
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)) {
-    Serial.println("讀取到 NFC 卡片！");
+    Serial.println("讀取到卡片！");
     
     // 顯示 16 進位 UID，使用空白分隔且不帶 0x
     Serial.print("UID: ");

@@ -22,21 +22,25 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("請將 NFC 卡片靠近...");
+  Serial.println("請將 NFC 卡片靠近感應區...");
 
-  if (nfc.tagPresent()) {  // 檢測是否有 NFC 標籤
+  if (nfc.tagPresent()) {  // 檢測是否有 NFC 卡片
+    Serial.println("偵測到 NFC 卡片！");
+
+    // 建立要寫入的 NDEF 訊息
     NdefMessage message = NdefMessage();
-    message.addTextRecord("我愛你");  // 建立要寫入的 NDEF 訊息
+    message.addTextRecord("Hello NFC!"); // 添加一個文字記錄
 
-    bool success = nfc.write(message);  // 寫入 NFC 標籤
-    
+    Serial.println("正在寫入 NFC 卡片...");
+    bool success = nfc.write(message);  // 嘗試寫入 NFC 卡片
+
     if (success) {
       Serial.println("寫入成功！");
     } else {
       Serial.println("寫入失敗！");
     }
 
-    delay(2000); // 避免重複寫入
+    delay(2000); // 延遲 2 秒，避免連續寫入同一張卡片
   }
 }
 

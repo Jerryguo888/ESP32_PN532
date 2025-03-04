@@ -26,20 +26,20 @@ void setup() {
   }
 
   nfc.SAMConfig();
-  Serial.println("請刷 NFC 卡片...");
+  Serial.println("請刷卡片...");
 }
 
 void loop() {
-  uint8_t uid[7] = {0};  
-  uint8_t uidLength;
+  uint8_t uid[7] = {0};  // 儲存 UID 的陣列（最多 7 個字節）
+  uint8_t uidLength;  // UID 長度
 
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength)) {
-    Serial.println("讀取到 NFC 卡片！");
+    Serial.println("讀取到卡片！");
 
     Serial.print("UID: ");
     for (uint8_t i = 0; i < uidLength; i++) {
-      Serial.print(uid[i], HEX);
-      if (i < uidLength - 1) Serial.print(" "); 
+      Serial.print(uid[i], HEX);  // 以十六進位格式輸出 UID
+      if (i < uidLength - 1) Serial.print(" ");  
     }
     Serial.println();
 
